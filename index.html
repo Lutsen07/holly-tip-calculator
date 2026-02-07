@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tip Calculator</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="app-container">
+        <!-- Header -->
+        <header class="header">
+            <h1>💰 Tip Calculator</h1>
+            <div class="header-controls">
+                <button id="theme-toggle" class="icon-btn" title="Toggle Theme">🌙</button>
+                <button id="history-btn" class="icon-btn" title="View History">📊</button>
+            </div>
+        </header>
+
+        <!-- Main Calculator -->
+        <main class="calculator" id="main-view">
+            <!-- Bill Input Section -->
+            <section class="input-section">
+                <label for="bill-amount">Bill Total</label>
+                <div class="input-group">
+                    <span class="currency">$</span>
+                    <input type="number" id="bill-amount" placeholder="0.00" step="0.01" min="0">
+                    <button id="camera-btn" class="icon-btn" title="Scan Bill">📷</button>
+                </div>
+                <button id="clear-btn" class="clear-btn">Clear</button>
+            </section>
+
+            <!-- Tip Options -->
+            <section class="tip-section">
+                <h3>Select Tip Percentage</h3>
+                <div class="tip-buttons">
+                    <button class="tip-btn" data-tip="15">15%</button>
+                    <button class="tip-btn" data-tip="20">20%</button>
+                    <button class="tip-btn" data-tip="25">25%</button>
+                    <button class="tip-btn custom" id="custom-tip">Custom</button>
+                </div>
+                
+                <!-- Custom Tip Input (Hidden by default) -->
+                <div class="custom-input-group" id="custom-input" style="display: none;">
+                    <input type="number" id="custom-percentage" placeholder="%" min="0" max="100" step="0.1">
+                    <button id="apply-custom">Apply</button>
+                </div>
+            </section>
+
+            <!-- Split Bill Option -->
+            <section class="split-section">
+                <div class="split-toggle">
+                    <label for="split-checkbox">Split bill among multiple people</label>
+                    <input type="checkbox" id="split-checkbox">
+                </div>
+                <div class="split-input-group" id="split-input" style="display: none;">
+                    <label for="people-count">Number of people:</label>
+                    <input type="number" id="people-count" min="1" value="2" step="1">
+                </div>
+            </section>
+
+            <!-- Results Display -->
+            <section class="results" id="results" style="display: none;">
+                <div class="result-item">
+                    <span class="label">Bill Total:</span>
+                    <span class="value" id="bill-total">$0.00</span>
+                </div>
+                <div class="result-item">
+                    <span class="label">Tip (<span id="tip-percent">0</span>%):</span>
+                    <span class="value" id="tip-amount">$0.00</span>
+                </div>
+                <div class="result-item total">
+                    <span class="label">Total with Tip:</span>
+                    <span class="value" id="total-amount">$0.00</span>
+                </div>
+                <div class="result-item split" id="split-result" style="display: none;">
+                    <span class="label">Per Person:</span>
+                    <span class="value" id="per-person">$0.00</span>
+                </div>
+                
+                <button id="save-btn" class="save-btn">💾 Save to History</button>
+            </section>
+        </main>
+
+        <!-- History View -->
+        <section class="history-view" id="history-view" style="display: none;">
+            <div class="history-header">
+                <h2>Tip History</h2>
+                <button id="back-btn" class="back-btn">← Back</button>
+            </div>
+            <div class="history-list" id="history-list">
+                <!-- History items will be inserted here -->
+            </div>
+            <button id="export-btn" class="export-btn">Export History</button>
+        </section>
+
+        <!-- Camera Modal -->
+        <div class="modal" id="camera-modal" style="display: none;">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3>Scan Bill</h3>
+                    <button id="close-camera" class="close-btn">×</button>
+                </div>
+                <video id="video" autoplay></video>
+                <canvas id="canvas" style="display: none;"></canvas>
+                <div class="camera-controls">
+                    <button id="capture-btn" class="capture-btn">📷 Capture</button>
+                    <button id="manual-btn" class="manual-btn">Enter Manually</button>
+                </div>
+                <div id="ocr-result" style="display: none;">
+                    <p>Detected amount: $<span id="detected-amount"></span></p>
+                    <button id="use-detected">Use This Amount</button>
+                    <button id="retry-scan">Scan Again</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
