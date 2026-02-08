@@ -134,7 +134,7 @@ body {
 
 .currency {
     padding: 0 10px;
-    font-size: 1.1rem;
+    font-size: 1.4rem;
     font-weight: 600;
     color: var(--text-secondary);
 }
@@ -144,9 +144,10 @@ body {
     border: none;
     background: none;
     padding: 12px 8px;
-    font-size: 1.1rem;
+    font-size: 1.4rem;
     color: var(--text-color);
     outline: none;
+    font-weight: 600;
 }
 
 #bill-amount::placeholder {
@@ -190,11 +191,11 @@ body {
     background-color: var(--surface-color);
     color: var(--text-color);
     border-radius: 8px;
-    font-size: 1rem;
+    font-size: 1.2rem;
     font-weight: 600;
     cursor: pointer;
     transition: all 0.2s ease;
-    min-height: 44px;
+    min-height: 48px;
 }
 
 .tip-btn:hover, .tip-btn.active {
@@ -296,9 +297,10 @@ body {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 6px 0;
+    padding: 8px 0;
     border-bottom: 1px solid var(--border-color);
-    font-size: 0.95rem;
+    font-size: 1.1rem;
+    font-weight: 500;
 }
 
 .result-item:last-child {
@@ -306,11 +308,11 @@ body {
 }
 
 .result-item.total {
-    font-size: 1.1rem;
+    font-size: 1.4rem;
     font-weight: 700;
     color: var(--primary-color);
-    padding-top: 10px;
-    margin-top: 8px;
+    padding-top: 12px;
+    margin-top: 10px;
     border-top: 2px solid var(--primary-color);
 }
 
@@ -538,8 +540,8 @@ body {
     
     .tip-btn {
         padding: 10px 6px;
-        font-size: 0.9rem;
-        min-height: 40px;
+        font-size: 1.1rem;
+        min-height: 44px;
     }
     
     .header {
@@ -555,12 +557,12 @@ body {
     }
     
     .result-item {
-        font-size: 0.9rem;
-        padding: 4px 0;
+        font-size: 1.05rem;
+        padding: 6px 0;
     }
     
     .result-item.total {
-        font-size: 1rem;
+        font-size: 1.3rem;
     }
 }
 
