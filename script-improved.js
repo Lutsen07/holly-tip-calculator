@@ -284,6 +284,18 @@ function initApp() {
             localStorage.setItem('tip-calculator-theme', newTheme);
         }
         
+        // Camera button
+        if (e.target.id === 'camera-btn') {
+            console.log('Camera button clicked');
+            openCamera();
+        }
+        
+        // Camera modal close
+        if (e.target.id === 'close-camera' || e.target.id === 'manual-btn') {
+            console.log('Close camera clicked');
+            closeCamera();
+        }
+        
         // Clear button
         if (e.target.id === 'clear-btn') {
             console.log('Clear clicked');
@@ -324,6 +336,69 @@ function initApp() {
         historyItems: history.length,
         theme: savedTheme
     });
+}
+
+// Camera functionality
+async function openCamera() {
+    console.log('Opening camera...');
+    const video = document.getElementById('video');
+    const cameraModal = document.getElementById('camera-modal');
+    
+    if (!video || !cameraModal) {
+        console.error('Camera elements not found');
+        alert('Camera not available - please enter amount manually');
+        return;
+    }
+    
+    try {
+        console.log('Requesting camera access...');
+        const stream = await navigator.mediaDevices.getUserMedia({ 
+            video: { 
+                facingMode: 'environment' // Use back camera if available
+            } 
+        });
+        
+        console.log('Camera access granted');
+        video.srcObject = stream;
+        cameraModal.style.display = 'flex';
+        
+        // Hide OCR result initially
+        const ocrResult = document.getElementById('ocr-result');
+        if (ocrResult) {
+            ocrResult.style.display = 'none';
+        }
+        
+    } catch (error) {
+        console.error('Camera access failed:', error);
+        alert('Camera access failed. Please check permissions or enter amount manually.');
+    }
+}
+
+function closeCamera() {
+    console.log('Closing camera...');
+    const video = document.getElementById('video');
+    const cameraModal = document.getElementById('camera-modal');
+    
+    // Stop video stream
+    if (video && video.srcObject) {
+        const tracks = video.srcObject.getTracks();
+        tracks.forEach(track => {
+            console.log('Stopping track:', track.kind);
+            track.stop();
+        });
+        video.srcObject = null;
+    }
+    
+    // Hide modal
+    if (cameraModal) {
+        cameraModal.style.display = 'none';
+    }
+    
+    // Hide OCR result
+    const ocrResult = document.getElementById('ocr-result');
+    if (ocrResult) {
+        ocrResult.style.display = 'none';
+    }
 }
 
 // Initialize when DOM is ready
