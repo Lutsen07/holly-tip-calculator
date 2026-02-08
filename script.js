@@ -1,4 +1,4 @@
-// Tip Calculator App JavaScript
+// Tip Calculator App JavaScript - FIXED VERSION
 class TipCalculator {
     constructor() {
         this.currentBill = 0;
@@ -11,6 +11,8 @@ class TipCalculator {
         this.attachEventListeners();
         this.loadTheme();
         this.updateHistory();
+        
+        console.log('Tip Calculator initialized successfully');
     }
     
     initializeElements() {
@@ -21,7 +23,7 @@ class TipCalculator {
         this.splitCheckbox = document.getElementById('split-checkbox');
         
         // Button elements
-        this.tipButtons = document.querySelectorAll('.tip-btn');
+        this.tipButtons = document.querySelectorAll('.tip-btn:not(.custom)');
         this.customTipBtn = document.getElementById('custom-tip');
         this.applyCustomBtn = document.getElementById('apply-custom');
         this.clearBtn = document.getElementById('clear-btn');
@@ -59,99 +61,200 @@ class TipCalculator {
         this.useDetectedBtn = document.getElementById('use-detected');
         this.retryScanBtn = document.getElementById('retry-scan');
         this.detectedAmountSpan = document.getElementById('detected-amount');
+        
+        console.log('Elements initialized:', {
+            tipButtons: this.tipButtons.length,
+            customTipBtn: !!this.customTipBtn,
+            themeToggle: !!this.themeToggle
+        });
     }
     
     attachEventListeners() {
         // Bill input
-        this.billAmountInput.addEventListener('input', () => this.updateCalculations());
+        if (this.billAmountInput) {
+            this.billAmountInput.addEventListener('input', () => {
+                console.log('Bill amount changed:', this.billAmountInput.value);
+                this.updateCalculations();
+            });
+        }
         
-        // Tip buttons
-        this.tipButtons.forEach(btn => {
-            if (!btn.classList.contains('custom')) {
-                btn.addEventListener('click', (e) => this.selectTipPercent(e.target.dataset.tip));
-            }
+        // Tip buttons - FIXED
+        this.tipButtons.forEach((btn, index) => {
+            console.log('Setting up tip button:', btn.dataset.tip);
+            btn.addEventListener('click', (e) => {
+                console.log('Tip button clicked:', e.target.dataset.tip);
+                this.selectTipPercent(e.target.dataset.tip);
+            });
         });
         
-        // Custom tip
-        this.customTipBtn.addEventListener('click', () => this.showCustomInput());
-        this.applyCustomBtn.addEventListener('click', () => this.applyCustomTip());
-        this.customPercentageInput.addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') this.applyCustomTip();
-        });
+        // Custom tip - FIXED
+        if (this.customTipBtn) {
+            this.customTipBtn.addEventListener('click', () => {
+                console.log('Custom tip button clicked');
+                this.showCustomInput();
+            });
+        }
+        
+        if (this.applyCustomBtn) {
+            this.applyCustomBtn.addEventListener('click', () => this.applyCustomTip());
+        }
+        
+        if (this.customPercentageInput) {
+            this.customPercentageInput.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') this.applyCustomTip();
+            });
+        }
         
         // Split bill
-        this.splitCheckbox.addEventListener('change', () => this.toggleSplitBill());
-        this.peopleCountInput.addEventListener('input', () => this.updateCalculations());
+        if (this.splitCheckbox) {
+            this.splitCheckbox.addEventListener('change', () => this.toggleSplitBill());
+        }
+        if (this.peopleCountInput) {
+            this.peopleCountInput.addEventListener('input', () => this.updateCalculations());
+        }
         
         // Controls
-        this.clearBtn.addEventListener('click', () => this.clearAll());
-        this.saveBtn.addEventListener('click', () => this.saveToHistory());
-        this.themeToggle.addEventListener('click', () => this.toggleTheme());
-        this.historyBtn.addEventListener('click', () => this.showHistory());
-        this.backBtn.addEventListener('click', () => this.showCalculator());
-        this.exportBtn.addEventListener('click', () => this.exportHistory());
+        if (this.clearBtn) {
+            this.clearBtn.addEventListener('click', () => this.clearAll());
+        }
+        if (this.saveBtn) {
+            this.saveBtn.addEventListener('click', () => this.saveToHistory());
+        }
+        if (this.themeToggle) {
+            this.themeToggle.addEventListener('click', () => {
+                console.log('Theme toggle clicked');
+                this.toggleTheme();
+            });
+        }
+        if (this.historyBtn) {
+            this.historyBtn.addEventListener('click', () => this.showHistory());
+        }
+        if (this.backBtn) {
+            this.backBtn.addEventListener('click', () => this.showCalculator());
+        }
+        if (this.exportBtn) {
+            this.exportBtn.addEventListener('click', () => this.exportHistory());
+        }
         
         // Camera
-        this.cameraBtn.addEventListener('click', () => this.openCamera());
-        this.closeCameraBtn.addEventListener('click', () => this.closeCamera());
-        this.captureBtn.addEventListener('click', () => this.captureImage());
-        this.manualBtn.addEventListener('click', () => this.closeCamera());
-        this.useDetectedBtn.addEventListener('click', () => this.useDetectedAmount());
-        this.retryScanBtn.addEventListener('click', () => this.retryCapture());
+        if (this.cameraBtn) {
+            this.cameraBtn.addEventListener('click', () => this.openCamera());
+        }
+        if (this.closeCameraBtn) {
+            this.closeCameraBtn.addEventListener('click', () => this.closeCamera());
+        }
+        if (this.captureBtn) {
+            this.captureBtn.addEventListener('click', () => this.captureImage());
+        }
+        if (this.manualBtn) {
+            this.manualBtn.addEventListener('click', () => this.closeCamera());
+        }
+        if (this.useDetectedBtn) {
+            this.useDetectedBtn.addEventListener('click', () => this.useDetectedAmount());
+        }
+        if (this.retryScanBtn) {
+            this.retryScanBtn.addEventListener('click', () => this.retryCapture());
+        }
+        
+        console.log('Event listeners attached successfully');
     }
     
-    // Theme Management
+    // Theme Management - FIXED
     loadTheme() {
         const savedTheme = localStorage.getItem('tip-calculator-theme') || 'light';
+        console.log('Loading theme:', savedTheme);
         this.setTheme(savedTheme);
     }
     
     toggleTheme() {
         const currentTheme = document.documentElement.getAttribute('data-theme') || 'light';
         const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+        console.log('Toggling theme from', currentTheme, 'to', newTheme);
         this.setTheme(newTheme);
     }
     
     setTheme(theme) {
+        console.log('Setting theme to:', theme);
         document.documentElement.setAttribute('data-theme', theme);
-        this.themeToggle.textContent = theme === 'light' ? '🌙' : '☀️';
+        if (this.themeToggle) {
+            this.themeToggle.textContent = theme === 'light' ? '🌙' : '☀️';
+        }
         localStorage.setItem('tip-calculator-theme', theme);
+        
+        // Force CSS refresh
+        document.body.style.display = 'none';
+        document.body.offsetHeight; // Trigger reflow
+        document.body.style.display = '';
     }
     
-    // Calculation Methods
+    // Calculation Methods - FIXED
     updateCalculations() {
         this.currentBill = parseFloat(this.billAmountInput.value) || 0;
+        
+        console.log('Updating calculations:', {
+            bill: this.currentBill,
+            tipPercent: this.currentTipPercent
+        });
         
         if (this.currentBill > 0 && this.currentTipPercent > 0) {
             this.currentTip = this.currentBill * (this.currentTipPercent / 100);
             const total = this.currentBill + this.currentTip;
             
-            this.splitCount = this.splitCheckbox.checked ? 
+            this.splitCount = this.splitCheckbox && this.splitCheckbox.checked ? 
                 (parseInt(this.peopleCountInput.value) || 1) : 1;
             
+            console.log('Displaying results:', {
+                bill: this.currentBill,
+                tip: this.currentTip,
+                total: total,
+                splitCount: this.splitCount
+            });
+            
             this.displayResults(this.currentBill, this.currentTip, total);
-            this.resultsSection.style.display = 'block';
+            if (this.resultsSection) {
+                this.resultsSection.style.display = 'block';
+            }
         } else {
-            this.resultsSection.style.display = 'none';
+            console.log('Hiding results - insufficient data');
+            if (this.resultsSection) {
+                this.resultsSection.style.display = 'none';
+            }
         }
     }
     
     displayResults(bill, tip, total) {
-        this.billTotalDisplay.textContent = this.formatCurrency(bill);
-        this.tipAmountDisplay.textContent = this.formatCurrency(tip);
-        this.totalAmountDisplay.textContent = this.formatCurrency(total);
-        this.tipPercentDisplay.textContent = this.currentTipPercent.toFixed(1);
+        console.log('Displaying results:', { bill, tip, total });
+        
+        if (this.billTotalDisplay) {
+            this.billTotalDisplay.textContent = this.formatCurrency(bill);
+        }
+        if (this.tipAmountDisplay) {
+            this.tipAmountDisplay.textContent = this.formatCurrency(tip);
+        }
+        if (this.totalAmountDisplay) {
+            this.totalAmountDisplay.textContent = this.formatCurrency(total);
+        }
+        if (this.tipPercentDisplay) {
+            this.tipPercentDisplay.textContent = this.currentTipPercent.toFixed(1);
+        }
         
         if (this.splitCount > 1) {
             const perPerson = total / this.splitCount;
-            this.perPersonDisplay.textContent = this.formatCurrency(perPerson);
-            this.splitResult.style.display = 'flex';
+            if (this.perPersonDisplay) {
+                this.perPersonDisplay.textContent = this.formatCurrency(perPerson);
+            }
+            if (this.splitResult) {
+                this.splitResult.style.display = 'flex';
+            }
         } else {
-            this.splitResult.style.display = 'none';
+            if (this.splitResult) {
+                this.splitResult.style.display = 'none';
+            }
         }
     }
     
     selectTipPercent(percent) {
+        console.log('Selecting tip percent:', percent);
         this.currentTipPercent = parseFloat(percent);
         this.updateTipButtonStates(percent);
         this.hideCustomInput();
@@ -160,10 +263,9 @@ class TipCalculator {
     
     updateTipButtonStates(activePercent) {
         this.tipButtons.forEach(btn => {
-            if (btn.classList.contains('custom')) return;
-            
             if (btn.dataset.tip === activePercent.toString()) {
                 btn.classList.add('active');
+                console.log('Activating button:', activePercent);
             } else {
                 btn.classList.remove('active');
             }
@@ -171,24 +273,33 @@ class TipCalculator {
     }
     
     showCustomInput() {
-        this.customInputGroup.style.display = 'flex';
-        this.customPercentageInput.focus();
+        console.log('Showing custom input');
+        if (this.customInputGroup) {
+            this.customInputGroup.style.display = 'flex';
+        }
+        if (this.customPercentageInput) {
+            this.customPercentageInput.focus();
+        }
         
         // Clear other tip button states
         this.tipButtons.forEach(btn => {
-            if (!btn.classList.contains('custom')) {
-                btn.classList.remove('active');
-            }
+            btn.classList.remove('active');
         });
     }
     
     hideCustomInput() {
-        this.customInputGroup.style.display = 'none';
-        this.customPercentageInput.value = '';
+        if (this.customInputGroup) {
+            this.customInputGroup.style.display = 'none';
+        }
+        if (this.customPercentageInput) {
+            this.customPercentageInput.value = '';
+        }
     }
     
     applyCustomTip() {
         const customPercent = parseFloat(this.customPercentageInput.value);
+        console.log('Applying custom tip:', customPercent);
+        
         if (customPercent && customPercent >= 0 && customPercent <= 100) {
             this.currentTipPercent = customPercent;
             this.hideCustomInput();
@@ -199,26 +310,31 @@ class TipCalculator {
     }
     
     toggleSplitBill() {
-        if (this.splitCheckbox.checked) {
-            this.splitInputGroup.style.display = 'flex';
+        if (this.splitCheckbox && this.splitCheckbox.checked) {
+            if (this.splitInputGroup) {
+                this.splitInputGroup.style.display = 'flex';
+            }
         } else {
-            this.splitInputGroup.style.display = 'none';
+            if (this.splitInputGroup) {
+                this.splitInputGroup.style.display = 'none';
+            }
         }
         this.updateCalculations();
     }
     
     clearAll() {
-        this.billAmountInput.value = '';
-        this.customPercentageInput.value = '';
-        this.peopleCountInput.value = '2';
-        this.splitCheckbox.checked = false;
+        if (this.billAmountInput) this.billAmountInput.value = '';
+        if (this.customPercentageInput) this.customPercentageInput.value = '';
+        if (this.peopleCountInput) this.peopleCountInput.value = '2';
+        if (this.splitCheckbox) this.splitCheckbox.checked = false;
+        
         this.currentBill = 0;
         this.currentTip = 0;
         this.currentTipPercent = 0;
         
-        this.resultsSection.style.display = 'none';
-        this.customInputGroup.style.display = 'none';
-        this.splitInputGroup.style.display = 'none';
+        if (this.resultsSection) this.resultsSection.style.display = 'none';
+        if (this.customInputGroup) this.customInputGroup.style.display = 'none';
+        if (this.splitInputGroup) this.splitInputGroup.style.display = 'none';
         
         this.tipButtons.forEach(btn => btn.classList.remove('active'));
     }
@@ -282,7 +398,6 @@ class TipCalculator {
     
     async getLocationName(lat, lng) {
         try {
-            // Using a free reverse geocoding service
             const response = await fetch(`https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=${lat}&longitude=${lng}&localityLanguage=en`);
             const data = await response.json();
             
@@ -317,10 +432,12 @@ class TipCalculator {
     }
     
     updateHistory() {
+        if (!this.historyList) return;
+        
         this.historyList.innerHTML = '';
         
         if (this.history.length === 0) {
-            this.historyList.innerHTML = '<p style=\"text-align: center; color: var(--text-secondary); padding: 20px;\">No history yet. Save some tip calculations!</p>';
+            this.historyList.innerHTML = '<p style="text-align: center; color: var(--text-secondary); padding: 20px;">No history yet. Save some tip calculations!</p>';
             return;
         }
         
@@ -329,13 +446,13 @@ class TipCalculator {
             historyItem.className = 'history-item';
             
             historyItem.innerHTML = `
-                <div class=\"history-date\">${item.date} • ${item.location}</div>
-                <div class=\"history-details\">
+                <div class="history-date">${item.date} • ${item.location}</div>
+                <div class="history-details">
                     <div>
                         <div>Bill: ${this.formatCurrency(item.billAmount)} + ${item.tipPercent.toFixed(1)}% tip</div>
                         <div>Total: ${this.formatCurrency(item.totalAmount)}${item.splitCount > 1 ? ` (${item.splitCount} people: ${this.formatCurrency(item.perPerson)}/person)` : ''}</div>
                     </div>
-                    <button onclick=\"app.deleteHistoryItem(${item.id})\" style=\"background: var(--error-color); color: white; border: none; border-radius: 4px; padding: 5px 10px; cursor: pointer;\">×</button>
+                    <button onclick="app.deleteHistoryItem(${item.id})" style="background: var(--error-color); color: white; border: none; border-radius: 4px; padding: 5px 10px; cursor: pointer;">×</button>
                 </div>
             `;
             
@@ -350,13 +467,13 @@ class TipCalculator {
     }
     
     showHistory() {
-        this.mainView.style.display = 'none';
-        this.historyView.style.display = 'block';
+        if (this.mainView) this.mainView.style.display = 'none';
+        if (this.historyView) this.historyView.style.display = 'block';
     }
     
     showCalculator() {
-        this.historyView.style.display = 'none';
-        this.mainView.style.display = 'block';
+        if (this.historyView) this.historyView.style.display = 'none';
+        if (this.mainView) this.mainView.style.display = 'block';
     }
     
     exportHistory() {
@@ -391,8 +508,8 @@ class TipCalculator {
         ]);
         
         const csvContent = [headers, ...rows]
-            .map(row => row.map(cell => `\"${cell}\"`).join(','))
-            .join('\\n');
+            .map(row => row.map(cell => `"${cell}"`).join(','))
+            .join('\n');
         
         return csvContent;
     }
@@ -402,7 +519,7 @@ class TipCalculator {
         try {
             const stream = await navigator.mediaDevices.getUserMedia({ 
                 video: { 
-                    facingMode: 'environment' // Use back camera if available
+                    facingMode: 'environment'
                 } 
             });
             this.video.srcObject = stream;
@@ -429,7 +546,6 @@ class TipCalculator {
         this.canvas.height = this.video.videoHeight;
         context.drawImage(this.video, 0, 0);
         
-        // Show loading state
         this.captureBtn.textContent = '🔍 Processing...';
         this.captureBtn.disabled = true;
         
@@ -438,7 +554,6 @@ class TipCalculator {
     
     async processImage() {
         try {
-            // Load Tesseract.js from CDN
             if (typeof Tesseract === 'undefined') {
                 await this.loadTesseract();
             }
@@ -475,13 +590,12 @@ class TipCalculator {
     }
     
     extractAmountFromText(text) {
-        // Look for currency amounts in various formats
         const patterns = [
-            /\\$([0-9]+\\.?[0-9]*)/g,           // $12.34
-            /([0-9]+\\.?[0-9]*)\\s*\\$/g,       // 12.34 $
-            /total[:\\s]*\\$?([0-9]+\\.?[0-9]*)/gi,  // Total: $12.34
-            /amount[:\\s]*\\$?([0-9]+\\.?[0-9]*)/gi, // Amount: 12.34
-            /([0-9]+\\.?[0-9]*)\\s*total/gi     // 12.34 total
+            /\$([0-9]+\.?[0-9]*)/g,
+            /([0-9]+\.?[0-9]*)\s*\$/g,
+            /total[:\s]*\$?([0-9]+\.?[0-9]*)/gi,
+            /amount[:\s]*\$?([0-9]+\.?[0-9]*)/gi,
+            /([0-9]+\.?[0-9]*)\s*total/gi
         ];
         
         const amounts = [];
@@ -490,13 +604,12 @@ class TipCalculator {
             let match;
             while ((match = pattern.exec(text)) !== null) {
                 const amount = parseFloat(match[1]);
-                if (amount > 0 && amount < 10000) { // Reasonable range
+                if (amount > 0 && amount < 10000) {
                     amounts.push(amount);
                 }
             }
         }
         
-        // Return the largest reasonable amount found
         return amounts.length > 0 ? Math.max(...amounts) : null;
     }
     
@@ -525,10 +638,11 @@ class TipCalculator {
 // Initialize the app when the page loads
 let app;
 document.addEventListener('DOMContentLoaded', () => {
+    console.log('DOM loaded, initializing app...');
     app = new TipCalculator();
 });
 
-// Service Worker for offline functionality (optional)
+// Service Worker for offline functionality
 if ('serviceWorker' in navigator) {
     window.addEventListener('load', () => {
         navigator.serviceWorker.register('/sw.js')
